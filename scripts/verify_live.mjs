@@ -81,10 +81,8 @@ async function verifyLive() {
   console.log('First episode link found:', firstEpisodeLink);
 
   if (firstEpisodeLink) {
-    await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle0' }),
-      page.click('a[href*="/episode-"]'),
-    ]);
+    await page.click('a[href*="/episode-"]');
+    await new Promise((r) => setTimeout(r, 1500));
     console.log('Navigated to:', page.url());
     const episodeTitle = await page.title();
     console.log('Episode page title:', episodeTitle);
@@ -94,6 +92,9 @@ async function verifyLive() {
         .map((img) => img.src || img.getAttribute('src'));
     });
     console.log('Episode broken images count:', episodeBrokenImgs.length);
+    if (episodeBrokenImgs.length > 0) {
+      brokenImages.push(...episodeBrokenImgs);
+    }
   }
 
   await browser.close();
