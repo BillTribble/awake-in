@@ -10,7 +10,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
   return (
-    <header className="site-header" style={{ padding: '16px 0', borderBottom: '1px solid var(--md-sys-color-surface-container-highest)' }}>
+    <header className="site-header" style={{ padding: '16px 0' }}>
       <div className="container header-inner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Brand: Verbatim original wordmark (inverted in dark mode) */}
         <Link to="/" className="brand" aria-label="Awake In Home" style={{ display: 'inline-block' }}>

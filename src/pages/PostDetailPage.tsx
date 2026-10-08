@@ -162,8 +162,7 @@ export const PostDetailPage: React.FC<PostDetailPageProps> = ({ onOpenSubscribe 
           className="ct-related-posts"
           style={{
             marginTop: '64px',
-            paddingTop: '40px',
-            borderTop: '1px solid var(--md-sys-color-surface-container-highest)',
+            paddingTop: '24px',
           }}
         >
           <h3

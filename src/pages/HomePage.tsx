@@ -158,7 +158,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenSubscribe }) => {
         {/* 4 featured episodes stacked vertically */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
           {featuredEpisodes.map((episode) => (
-            <article key={episode.id} className="featured-episode-item" style={{ borderBottom: '1px solid var(--md-sys-color-surface-container-highest)', paddingBottom: '40px' }}>
+            <article key={episode.id} className="featured-episode-item" style={{ paddingBottom: '16px' }}>
               {episode.featuredImage && (
                 <Link to={episode.originalPath} style={{ display: 'block', marginBottom: '20px', overflow: 'hidden', borderRadius: '12px' }}>
                   <img
@@ -307,10 +307,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenSubscribe }) => {
                 target="_blank"
                 rel="noreferrer noopener"
                 style={{
-                  border: '2px solid #ffffff',
+                  backgroundColor: 'rgba(255, 255, 255, 0.16)',
+                  border: 'none',
                   borderRadius: '50px',
                   color: '#ffffff',
-                  padding: '8px 24px',
+                  padding: '10px 24px',
                   fontSize: '16px',
                   fontWeight: 600,
                   fontFamily: "'canada-type-gibson', sans-serif",
@@ -363,10 +364,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenSubscribe }) => {
                 target="_blank"
                 rel="noreferrer noopener"
                 style={{
-                  border: '2px solid #ffffff',
+                  backgroundColor: 'rgba(255, 255, 255, 0.16)',
+                  border: 'none',
                   borderRadius: '50px',
                   color: '#ffffff',
-                  padding: '8px 24px',
+                  padding: '10px 24px',
                   fontSize: '16px',
                   fontWeight: 600,
                   fontFamily: "'canada-type-gibson', sans-serif",

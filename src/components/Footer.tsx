@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
   return (
-    <footer id="footer" className="ct-footer" style={{ marginTop: 'auto', borderTop: '1px solid var(--md-sys-color-surface-container-highest)' }}>
+    <footer id="footer" className="ct-footer" style={{ marginTop: 'auto' }}>
       {/* Top row */}
       <div style={{ padding: '48px 0 36px', backgroundColor: 'var(--md-sys-color-surface)' }}>
         <div className="container" style={{ maxWidth: '820px', margin: '0 auto', textAlign: 'center' }}>

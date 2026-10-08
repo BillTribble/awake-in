@@ -58,6 +58,13 @@ p, span, li, a, button, input, textarea {
   font-family: var(--font-body);
 }
 
+button {
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+}
+
 a {
   color: var(--theme-palette-color-1, #624aca);
   text-decoration: none;
@@ -218,6 +225,9 @@ html[data-theme="dark"] .brand-wordmark {
   height: 40px;
   padding: 0;
   border-radius: 50%;
+  border: none;
+  outline: none;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
