@@ -144,6 +144,12 @@
 
 /* Canonical GM3 System Tokens (Dark Mode) */
 [data-theme='dark'] {
+  --theme-palette-color-1: #937ef6;
+  --theme-palette-color-2: #52c790;
+  --theme-palette-color-3: rgba(226, 232, 240, 0.9);
+  --theme-palette-color-4: #f1f5f9;
+  --theme-palette-color-5: #131314;
+
   --md-sys-color-primary: #A7C7FA;
   --md-sys-color-on-primary: #072E70;
   --md-sys-color-primary-container: #0842A1;

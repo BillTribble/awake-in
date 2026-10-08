@@ -71,6 +71,13 @@ async function runAudit() {
   await page.screenshot({ path: homeDarkPath, fullPage: false });
   console.log('Saved:', homeDarkPath);
 
+  // Switch back to original Light mode for remaining pages
+  await page.evaluate(() => {
+    document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('awake-in-theme', 'light');
+  });
+  await new Promise((r) => setTimeout(r, 400));
+
   // 3. Subscribe modal
   console.log('Opening Subscribe Modal...');
   await page.evaluate(() => {
@@ -90,12 +97,7 @@ async function runAudit() {
   await page.keyboard.press('Escape');
   await new Promise((r) => setTimeout(r, 400));
 
-  // 4. Episodes page & Bottom Player
-  console.log('Auditing Episodes page & Audio Player...');
-  await page.goto(`${BASE_URL}/%f0%9f%8e%a7-all-episodes`, { waitUntil: 'networkidle0' });
-  await checkImages('Episodes Page');
-
-  // Navigate to an episode to trigger player
+  // 4. Episode 10 Detail page & Inline Player
   console.log('Auditing Episode 10 Detail page...');
   await page.goto(`${BASE_URL}/2022/04/21/episode-10-retreats/`, { waitUntil: 'networkidle0' });
   await checkImages('Episode 10 Detail');
@@ -108,13 +110,18 @@ async function runAudit() {
   });
   await new Promise((r) => setTimeout(r, 800));
 
-  const episodesPath = path.join(SCREENSHOT_DIR, 'awake_in_episodes_player.png');
-  await page.screenshot({ path: episodesPath, fullPage: false });
-  console.log('Saved:', episodesPath);
-
   const detailPath = path.join(SCREENSHOT_DIR, 'awake_in_episode_detail.png');
   await page.screenshot({ path: detailPath, fullPage: false });
   console.log('Saved:', detailPath);
+
+  // 5. All Episodes page with Persistent Bottom Player
+  console.log('Auditing Episodes page & Bottom Audio Player...');
+  await page.goto(`${BASE_URL}/%f0%9f%8e%a7-all-episodes`, { waitUntil: 'networkidle0' });
+  await new Promise((r) => setTimeout(r, 500));
+  await checkImages('Episodes Page');
+  const episodesPath = path.join(SCREENSHOT_DIR, 'awake_in_episodes_player.png');
+  await page.screenshot({ path: episodesPath, fullPage: false });
+  console.log('Saved:', episodesPath);
 
   // 6. RSS Page
   console.log('Auditing RSS Explorer page...');
