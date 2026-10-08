@@ -8,3 +8,4 @@ dist/
 *.m4a
 assets/
 html/
+__pycache__/
