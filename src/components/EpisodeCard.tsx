@@ -1,153 +1,113 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Episode } from '../data/types';
-import { useAudioPlayer } from '../context/AudioPlayerContext';
 
 interface EpisodeCardProps {
   episode: Episode;
 }
 
 export const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode }) => {
-  const { currentEpisode, isPlaying, playEpisode } = useAudioPlayer();
-  const isThisEpisodePlaying = currentEpisode?.id === episode.id && isPlaying;
-
-  const detailPath =
-    episode.category === 'blog'
-      ? `/blog/${episode.slug}`
-      : `/episodes/${episode.slug}`;
-
   return (
     <article
-      className="card"
+      className="gb-post-grid-item"
       style={{
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
-        height: '100%',
+        marginBottom: '40px',
       }}
     >
-      <div>
-        {/* Artwork */}
-        {episode.featuredImage && (
+      {/* Artwork */}
+      {episode.featuredImage && (
+        <div className="gb-block-post-grid-image" style={{ marginBottom: '16px' }}>
           <Link
-            to={detailPath}
-            style={{
-              display: 'block',
-              marginBottom: '16px',
-              borderRadius: '16px',
-              overflow: 'hidden',
-              aspectRatio: '16 / 9',
-              backgroundColor: 'var(--md-sys-color-surface-container)',
-            }}
+            to={episode.originalPath}
+            rel="bookmark"
+            aria-hidden="true"
+            tabIndex={-1}
+            style={{ display: 'block', borderRadius: '12px', overflow: 'hidden' }}
           >
             <img
               src={episode.featuredImage}
               alt=""
               style={{
                 width: '100%',
-                height: '100%',
+                height: 'auto',
+                aspectRatio: '600 / 400',
                 objectFit: 'cover',
                 display: 'block',
-                transition: 'transform 0.2s ease',
               }}
             />
           </Link>
-        )}
-
-        {/* Badges: Episode number, duration, date */}
-        <div className="badge-group" style={{ marginBottom: '12px' }}>
-          {episode.episodeNumber !== null && (
-            <span className="badge badge-primary">Episode {episode.episodeNumber}</span>
-          )}
-          {episode.duration && (
-            <span className="badge">
-              <span className="material-symbols-rounded" style={{ fontSize: '14px' }}>
-                schedule
-              </span>
-              <span>{episode.duration}</span>
-            </span>
-          )}
-          <span className="badge" style={{ backgroundColor: 'transparent', color: 'var(--md-sys-color-on-surface-variant)' }}>
-            {episode.formattedDate}
-          </span>
         </div>
+      )}
 
-        {/* Title */}
-        <h3 style={{ marginBottom: '8px' }}>
+      {/* Header & Title */}
+      <header className="gb-block-post-grid-header" style={{ marginBottom: '8px' }}>
+        <h3
+          className="gb-block-post-grid-title"
+          style={{
+            fontFamily: "'canada-type-gibson', sans-serif",
+            fontSize: '22px',
+            fontWeight: 700,
+            lineHeight: 1.3,
+            marginBottom: '8px',
+          }}
+        >
           <Link
-            to={detailPath}
-            style={{
-              color: 'var(--md-sys-color-on-surface)',
-              textDecoration: 'none',
-            }}
+            to={episode.originalPath}
+            rel="bookmark"
+            style={{ color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))' }}
           >
             {episode.title}
           </Link>
         </h3>
 
-        {/* Excerpt */}
-        <p
-          style={{
-            fontSize: '14px',
-            color: 'var(--md-sys-color-on-surface-variant)',
-            lineHeight: 1.5,
-            marginBottom: '20px',
-            display: '-webkit-box',
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
-          {episode.excerptText}
-        </p>
-      </div>
-
-      {/* Card Actions */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '12px',
-          paddingTop: '16px',
-          borderTop: '1px solid var(--md-sys-color-surface-container-highest)',
-        }}
-      >
-        {episode.audioUrl || episode.remoteAudioUrl ? (
-          <button
-            type="button"
-            className="btn btn-tonal"
-            onClick={() => playEpisode(episode)}
-            style={{ fontSize: '13px', padding: '6px 16px' }}
-            aria-label={isThisEpisodePlaying ? `Pause ${episode.title}` : `Listen now to ${episode.title}`}
+        {/* Date only - NO invented duration or episode number badges */}
+        <div className="gb-block-post-grid-byline" style={{ marginBottom: '12px' }}>
+          <time
+            dateTime={episode.date}
+            className="gb-block-post-grid-date"
+            style={{
+              fontSize: '13px',
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              color: 'var(--md-sys-color-on-surface-variant)',
+            }}
           >
-            <span className="material-symbols-rounded filled" style={{ fontSize: '18px' }}>
-              {isThisEpisodePlaying ? 'pause' : 'play_arrow'}
-            </span>
-            <span>{isThisEpisodePlaying ? 'Pause' : 'Listen now'}</span>
-          </button>
-        ) : (
-          <div />
-        )}
+            {episode.formattedDate}
+          </time>
+        </div>
+      </header>
 
+      {/* Verbatim excerpt */}
+      <div
+        className="gb-block-post-grid-excerpt"
+        style={{
+          fontSize: '17px',
+          lineHeight: '1.6',
+          marginBottom: '14px',
+          color: 'var(--theme-palette-color-3, rgba(44, 62, 80, 0.9))',
+        }}
+        dangerouslySetInnerHTML={{ __html: episode.excerptHtml }}
+      />
+
+      {/* Verbatim Read/Listen link */}
+      <p style={{ margin: 0 }}>
         <Link
-          to={detailPath}
+          to={episode.originalPath}
+          className="gb-block-post-grid-more-link"
+          rel="bookmark"
           style={{
-            fontSize: '13px',
-            fontWeight: 600,
-            color: 'var(--md-sys-color-primary)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '4px',
+            fontFamily: "'canada-type-gibson', sans-serif",
+            fontWeight: 700,
+            fontSize: '17px',
+            color: 'var(--theme-palette-color-1, #624aca)',
+            textDecoration: 'none',
           }}
         >
-          <span>Notes & transcript</span>
-          <span className="material-symbols-rounded" style={{ fontSize: '16px' }}>
-            arrow_forward
-          </span>
+          {episode.category === 'blog' ? 'Continue Reading' : 'Listen Now ▶️ '}
         </Link>
-      </div>
+      </p>
     </article>
   );
 };

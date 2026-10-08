@@ -7,20 +7,26 @@
 
 :root {
   color-scheme: light dark;
-  --font-display: 'Google Sans Flex', 'Google Sans', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'canada-type-gibson', sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --font-body: var(--font-sans);
 }
 
 body {
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.6;
+  font-family: var(--font-sans);
+  font-size: 20px;
+  line-height: 1.65;
+  font-weight: 400;
   background-color: var(--md-sys-color-surface);
-  color: var(--md-sys-color-on-surface);
+  color: rgba(44, 62, 80, 0.9);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
+}
+
+html[data-theme="dark"] body {
+  color: rgba(220, 226, 235, 0.9);
 }
 
 #root {
@@ -30,11 +36,17 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6, .brand-title, .btn {
-  font-family: var(--font-display);
+h1, h2, h3, h4, h5, h6, .faux-heading, .gb-block-post-grid-more-link, .wp-block-button a, .wp-block-button__link, .paoc-popup-btn, input[type="submit"], .ct-menu-link, .nav-link, .btn, .brand-title {
+  font-family: 'canada-type-gibson', sans-serif;
   color: var(--md-sys-color-on-surface);
   font-weight: 600;
   line-height: 1.25;
+}
+
+.wp-block-pullquote {
+  font-family: Georgia, serif;
+  font-weight: 600;
+  font-size: 25px;
 }
 
 h1 { font-size: 2.25rem; }
@@ -47,7 +59,7 @@ p, span, li, a, button, input, textarea {
 }
 
 a {
-  color: var(--md-sys-color-primary);
+  color: var(--theme-palette-color-1, #624aca);
   text-decoration: none;
   transition: opacity 0.15s ease;
 }

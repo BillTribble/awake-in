@@ -6,7 +6,7 @@ export const siteMeta: SiteMeta = {
   tagline: 'Chats about mindfulness, wellness, and awakening.',
   contactEmail: 'us@awake-in.com',
   navItems: [
-    { label: '🎧 All episodes', path: '/episodes' },
+    { label: '🎧 All episodes', path: '/%f0%9f%8e%a7-all-episodes' },
     { label: '✍️ Blog', path: '/blog' },
     { label: '💌 Contact', path: '/contact' },
   ],

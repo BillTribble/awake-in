@@ -48,6 +48,7 @@ export const App: React.FC = () => {
               <Route path="/episodes" element={<EpisodesPage />} />
               <Route path="/episodes/:slug" element={<PostDetailPage onOpenSubscribe={() => setIsSubscribeOpen(true)} />} />
               <Route path="/%f0%9f%8e%a7-all-episodes" element={<EpisodesPage />} />
+              <Route path="/🎧-all-episodes" element={<EpisodesPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<PostDetailPage onOpenSubscribe={() => setIsSubscribeOpen(true)} />} />
               <Route path="/contact" element={<ContactPage />} />

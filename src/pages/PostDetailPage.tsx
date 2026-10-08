@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
-import { episodes } from '../data/episodes';
+import { episodes, podcastEpisodes } from '../data/episodes';
 import { InlinePlayer } from '../components/AudioPlayerBar';
 
 interface PostDetailPageProps {
@@ -14,7 +14,7 @@ export const PostDetailPage: React.FC<PostDetailPageProps> = ({ onOpenSubscribe 
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Match episode by slug, or by originalPath, or query parameter (?p=id)
-  const episode = React.useMemo(() => {
+  const episode = useMemo(() => {
     // 1. By slug
     if (slug) {
       const match = episodes.find((ep) => ep.slug === slug);
@@ -82,145 +82,137 @@ export const PostDetailPage: React.FC<PostDetailPageProps> = ({ onOpenSubscribe 
         <p style={{ color: 'var(--md-sys-color-on-surface-variant)', marginBottom: '24px' }}>
           We couldn&rsquo;t find the episode or article you were looking for.
         </p>
-        <Link to="/episodes" className="btn btn-primary">
+        <Link to="/%f0%9f%8e%a7-all-episodes" className="wp-block-button__link">
           Back to all episodes
         </Link>
       </div>
     );
   }
 
-  // Previous and Next episodes
-  const currentIndex = episodes.findIndex((ep) => ep.id === episode.id);
-  const prevEpisode = currentIndex > 0 ? episodes[currentIndex - 1] : null;
-  const nextEpisode = currentIndex < episodes.length - 1 ? episodes[currentIndex + 1] : null;
+  // 3 other episodes for "More Episodes"
+  const moreEpisodes = podcastEpisodes.filter((ep) => ep.id !== episode.id).slice(0, 3);
 
   return (
-    <article className="container-narrow" style={{ paddingBottom: '80px', paddingTop: '16px' }}>
-      {/* Breadcrumb navigation */}
-      <nav
-        aria-label="Breadcrumb"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          fontSize: '13px',
-          color: 'var(--md-sys-color-on-surface-variant)',
-          marginBottom: '20px',
-        }}
-      >
-        <Link to="/">Home</Link>
-        <span>/</span>
-        <Link to={episode.category === 'blog' ? '/blog' : '/episodes'}>
-          {episode.category === 'blog' ? 'Blog' : 'Episodes'}
-        </Link>
-        <span>/</span>
-        <span style={{ color: 'var(--md-sys-color-on-surface)', fontWeight: 500 }}>
-          {episode.category === 'podcast' && episode.episodeNumber !== null
-            ? `Episode ${episode.episodeNumber}`
-            : episode.title}
-        </span>
-      </nav>
+    <article className="container-narrow" style={{ paddingBottom: '80px', paddingTop: '32px' }}>
+      {/* Title & Entry Meta: Uppercase 12px, font-weight: 600 - NO invented badges */}
+      <header className="entry-header" style={{ marginBottom: '28px' }}>
+        <h1
+          className="page-title"
+          style={{
+            fontFamily: "'canada-type-gibson', sans-serif",
+            fontSize: '2.5rem',
+            fontWeight: 700,
+            lineHeight: 1.2,
+            marginBottom: '14px',
+            color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))',
+          }}
+        >
+          {episode.title}
+        </h1>
+
+        <div className="entry-meta" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <time
+            dateTime={episode.date}
+            style={{
+              fontSize: '12px',
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              color: 'var(--md-sys-color-on-surface-variant)',
+            }}
+          >
+            {episode.formattedDate}
+          </time>
+        </div>
+      </header>
 
       {/* Featured Artwork */}
       {episode.featuredImage && (
-        <div
-          style={{
-            borderRadius: '24px',
-            overflow: 'hidden',
-            marginBottom: '28px',
-            backgroundColor: 'var(--md-sys-color-surface-container)',
-            maxHeight: '440px',
-          }}
-        >
+        <figure className="ct-featured-image alignwide" style={{ margin: '0 0 36px 0', borderRadius: '16px', overflow: 'hidden' }}>
           <img
             src={episode.featuredImage}
             alt=""
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
           />
-        </div>
+        </figure>
       )}
 
-      {/* Episode Header */}
-      <div style={{ marginBottom: '24px' }}>
-        <div className="badge-group" style={{ marginBottom: '12px' }}>
-          {episode.episodeNumber !== null && (
-            <span className="badge badge-primary">Episode {episode.episodeNumber}</span>
-          )}
-          {episode.duration && (
-            <span className="badge">
-              <span className="material-symbols-rounded" style={{ fontSize: '14px' }}>
-                schedule
-              </span>
-              <span>{episode.duration}</span>
-            </span>
-          )}
-          <span className="badge" style={{ backgroundColor: 'transparent', color: 'var(--md-sys-color-on-surface-variant)' }}>
-            {episode.formattedDate}
-          </span>
+      {/* Inline Audio Player for Podcasts (Preserved custom component per Bill) */}
+      {episode.category === 'podcast' && (
+        <div style={{ marginBottom: '36px' }}>
+          <InlinePlayer episode={episode} />
         </div>
-
-        <h1 style={{ fontSize: '2.25rem', marginBottom: '16px', lineHeight: 1.2 }}>
-          {episode.title}
-        </h1>
-      </div>
-
-      {/* Inline Audio Player for Podcasts */}
-      {episode.category === 'podcast' && <InlinePlayer episode={episode} />}
+      )}
 
       {/* Post / Episode Content & Transcript */}
       <div
         ref={contentRef}
-        className="post-content"
+        className="entry-content"
         style={{
-          fontSize: '15px',
-          lineHeight: 1.75,
-          color: 'var(--md-sys-color-on-surface)',
-          marginTop: '32px',
+          fontSize: '20px',
+          lineHeight: '1.65',
+          color: 'var(--theme-palette-color-3, rgba(44, 62, 80, 0.9))',
         }}
         dangerouslySetInnerHTML={{ __html: episode.contentHtml }}
       />
 
-      {/* Next / Previous Episode Navigation */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: '16px',
-          marginTop: '56px',
-          paddingTop: '32px',
-          borderTop: '1px solid var(--md-sys-color-surface-container-highest)',
-        }}
-      >
-        {prevEpisode ? (
-          <Link
-            to={prevEpisode.category === 'blog' ? `/blog/${prevEpisode.slug}` : `/episodes/${prevEpisode.slug}`}
-            className="card"
-            style={{ textDecoration: 'none', padding: '16px 20px' }}
+      {/* More Episodes Section (.ct-related-posts) */}
+      {episode.category === 'podcast' && moreEpisodes.length > 0 && (
+        <section
+          className="ct-related-posts"
+          style={{
+            marginTop: '64px',
+            paddingTop: '40px',
+            borderTop: '1px solid var(--md-sys-color-surface-container-highest)',
+          }}
+        >
+          <h3
+            className="ct-module-title"
+            style={{
+              fontFamily: "'canada-type-gibson', sans-serif",
+              fontSize: '24px',
+              fontWeight: 700,
+              marginBottom: '28px',
+              color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))',
+            }}
           >
-            <span style={{ fontSize: '12px', color: 'var(--md-sys-color-on-surface-variant)' }}>
-              ← Newer {prevEpisode.category === 'blog' ? 'post' : 'episode'}
-            </span>
-            <div style={{ fontWeight: 600, fontSize: '14px', marginTop: '4px', color: 'var(--md-sys-color-on-surface)' }}>
-              {prevEpisode.title}
-            </div>
-          </Link>
-        ) : <div />}
+            More Episodes
+          </h3>
 
-        {nextEpisode ? (
-          <Link
-            to={nextEpisode.category === 'blog' ? `/blog/${nextEpisode.slug}` : `/episodes/${nextEpisode.slug}`}
-            className="card"
-            style={{ textDecoration: 'none', padding: '16px 20px', textAlign: 'right' }}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '24px',
+            }}
           >
-            <span style={{ fontSize: '12px', color: 'var(--md-sys-color-on-surface-variant)' }}>
-              Older {nextEpisode.category === 'blog' ? 'post' : 'episode'} →
-            </span>
-            <div style={{ fontWeight: 600, fontSize: '14px', marginTop: '4px', color: 'var(--md-sys-color-on-surface)' }}>
-              {nextEpisode.title}
-            </div>
-          </Link>
-        ) : <div />}
-      </div>
+            {moreEpisodes.map((item) => (
+              <div key={item.id} style={{ display: 'flex', flexDirection: 'column' }}>
+                {item.featuredImage && (
+                  <Link to={item.originalPath} style={{ display: 'block', marginBottom: '12px', borderRadius: '8px', overflow: 'hidden' }}>
+                    <img
+                      src={item.featuredImage}
+                      alt={item.title}
+                      style={{ width: '100%', aspectRatio: '16 / 10', objectFit: 'cover', display: 'block' }}
+                    />
+                  </Link>
+                )}
+                <h4 style={{ fontFamily: "'canada-type-gibson', sans-serif", fontSize: '18px', fontWeight: 700, marginBottom: '6px', lineHeight: 1.3 }}>
+                  <Link to={item.originalPath} style={{ color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))' }}>
+                    {item.title}
+                  </Link>
+                </h4>
+                <time
+                  dateTime={item.date}
+                  style={{ fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', color: 'var(--md-sys-color-on-surface-variant)' }}
+                >
+                  {item.formattedDate}
+                </time>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </article>
   );
 };

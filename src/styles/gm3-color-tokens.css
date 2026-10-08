@@ -4,6 +4,13 @@
    Includes 1:1 --color-* aliases for Tailwind v4 (@theme) & legacy compatibility. */
 
 :root {
+  /* Original Theme Palette Colors from awake-in.com */
+  --theme-palette-color-1: #624aca;
+  --theme-palette-color-2: #33a370;
+  --theme-palette-color-3: rgba(44, 62, 80, 0.9);
+  --theme-palette-color-4: rgba(44, 62, 80, 1);
+  --theme-palette-color-5: #ffffff;
+
   /* Canonical GM3 System Tokens (Light Mode) */
   --md-sys-color-primary: #0E57D0;
   --md-sys-color-on-primary: #FFFFFF;

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { siteMeta } from '../data/siteMeta';
+import React, { useEffect } from 'react';
 import { withBase } from '../utils/basePath';
 
 interface SubscribeModalProps {
@@ -8,9 +7,6 @@ interface SubscribeModalProps {
 }
 
 export const SubscribeModal: React.FC<SubscribeModalProps> = ({ isOpen, onClose }) => {
-  const [copied, setCopied] = useState(false);
-  const rssUrl = 'https://awake-in.com/podcasts/awake-in/feed/';
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -27,146 +23,120 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({ isOpen, onClose 
 
   if (!isOpen) return null;
 
-  const handleCopyRss = async () => {
-    try {
-      await navigator.clipboard.writeText(rssUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    } catch (err) {
-      console.error('Failed to copy RSS URL', err);
-    }
-  };
-
   return (
     <div
       className="modal-backdrop"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="subscribe-modal-title"
+      aria-label="Subscribe"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        backdropFilter: 'blur(4px)',
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+      }}
     >
       <div
-        className="modal-surface"
+        className="paoc-popup-modal"
+        id="paoc-popup-3685-3"
         onClick={(e) => e.stopPropagation()}
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '20px',
+          backgroundColor: 'var(--md-sys-color-surface)',
+          color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))',
+          borderRadius: '16px',
+          maxWidth: '480px',
+          width: '100%',
+          padding: '36px',
+          position: 'relative',
+          boxShadow: 'none',
         }}
       >
-        {/* Modal Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
-            <h2 id="subscribe-modal-title" style={{ fontSize: '1.4rem', marginBottom: '4px' }}>
-              {siteMeta.subscribeModal.heading}
-            </h2>
-            <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '14px' }}>
-              {siteMeta.subscribeModal.description}
-            </p>
-          </div>
-          <button
-            type="button"
-            className="btn-icon"
-            onClick={onClose}
-            aria-label="Close dialog"
-            title="Close dialog"
-          >
-            <span className="material-symbols-rounded">close</span>
-          </button>
-        </div>
-
-        {/* Platform Grid */}
-        <div
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-            gap: '12px',
+            position: 'absolute',
+            top: '16px',
+            right: '16px',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '24px',
+            color: 'var(--md-sys-color-on-surface-variant)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-          {siteMeta.subscribeLinks.map((link) => (
+          <span className="material-symbols-rounded">close</span>
+        </button>
+
+        <p style={{ fontFamily: "'canada-type-gibson', sans-serif", fontSize: '20px', fontWeight: 600, marginBottom: '24px' }}>
+          Listen or subscribe wherever good podcasts are found.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '18px', fontWeight: 600 }}>
+          <p style={{ margin: 0 }}>
             <a
-              key={link.platform}
-              href={link.url}
+              href="https://podcasts.apple.com/gb/podcast/awake-in/id1505822560"
               target="_blank"
               rel="noopener noreferrer"
-              className="card"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px 16px',
-                borderRadius: '16px',
-                textDecoration: 'none',
-                color: 'var(--md-sys-color-on-surface)',
-              }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))', textDecoration: 'none' }}
             >
-              <img
-                src={link.quickIcon || link.icon}
-                alt={`${link.platform} icon`}
-                style={{ width: '28px', height: '28px', objectFit: 'contain' }}
-              />
-              <span style={{ fontWeight: 600, fontSize: '14px' }}>{link.platform}</span>
-              <span
-                className="material-symbols-rounded"
-                style={{ marginLeft: 'auto', fontSize: '18px', color: 'var(--md-sys-color-outline)' }}
-              >
-                open_in_new
-              </span>
+              <img src={withBase('/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Apple-Podcasts.png')} width="32" height="32" alt="" /> Apple Podcasts
             </a>
-          ))}
-        </div>
+          </p>
 
-        {/* One-click Copy RSS Feed Strip */}
-        <div
-          style={{
-            backgroundColor: 'var(--md-sys-color-surface-container)',
-            borderRadius: '16px',
-            padding: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--md-sys-color-on-surface-variant)' }}>
-              Podcast RSS feed URL
-            </span>
-            <button
-              type="button"
-              onClick={handleCopyRss}
-              className="btn btn-tonal"
-              style={{ padding: '6px 14px', fontSize: '13px' }}
+          <p style={{ margin: 0 }}>
+            <a
+              href="https://podcasts.google.com/?feed=aHR0cDovL3d3dy5hd2FrZS1pbi5jb20vZmVlZC8"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))', textDecoration: 'none' }}
             >
-              <span className="material-symbols-rounded" style={{ fontSize: '16px' }}>
-                {copied ? 'check' : 'content_copy'}
-              </span>
-              <span>{copied ? 'Copied!' : 'Copy URL'}</span>
-            </button>
-          </div>
-          <code
-            style={{
-              fontSize: '12px',
-              fontFamily: 'monospace',
-              backgroundColor: 'var(--md-sys-color-surface)',
-              padding: '8px 12px',
-              borderRadius: '8px',
-              wordBreak: 'break-all',
-              color: 'var(--md-sys-color-primary)',
-            }}
-          >
-            {rssUrl}
-          </code>
-        </div>
+              <img src={withBase('/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Google-Podcasts.png')} width="32" height="32" alt="" /> Google Podcasts
+            </a>
+          </p>
 
-        {/* Links to inspect preserved XML feeds */}
-        <div style={{ display: 'flex', gap: '16px', fontSize: '13px', justifyContent: 'center' }}>
-          <a href={withBase('/podcasts/awake-in/feed/index.xml')} target="_blank" rel="noopener noreferrer">
-            View podcast feed XML
-          </a>
-          <span style={{ color: 'var(--md-sys-color-outline-variant)' }}>•</span>
-          <a href={withBase('/feed.xml')} target="_blank" rel="noopener noreferrer">
-            View site feed XML
-          </a>
+          <p style={{ margin: 0 }}>
+            <a
+              href="https://www.stitcher.com/podcast/awake-in"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))', textDecoration: 'none' }}
+            >
+              <img src={withBase('/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Stitcher.png')} width="32" height="32" alt="" /> Stitcher
+            </a>
+          </p>
+
+          <p style={{ margin: 0 }}>
+            <a
+              href="https://open.spotify.com/show/3yy3g4AhT9lBueGWLXFSjk"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))', textDecoration: 'none' }}
+            >
+              <img src={withBase('/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Spotify.png')} width="32" height="32" alt="" /> Spotify
+            </a>
+          </p>
+
+          <p style={{ margin: 0 }}>
+            <a
+              href={withBase('/podcasts/awake-in/feed/index.xml')}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))', textDecoration: 'none' }}
+            >
+              <img src={withBase('/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/RSS.png')} width="32" height="32" alt="" /> RSS
+            </a>
+          </p>
         </div>
       </div>
     </div>

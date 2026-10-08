@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Content & Design Extractor for awake-in.com migration."""
 
+from datetime import datetime
 import html
 import json
 import os
 import re
-from datetime import datetime
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
@@ -20,6 +20,24 @@ RAW_DIR = "/tmp/awake-in-raw"
 OUTPUT_DATA_DIR = "/usr/local/google/home/tribble/awake-in/src/data"
 
 
+def extract_page_excerpts(page_obj):
+  if not page_obj:
+    return {}
+  soup = BeautifulSoup(page_obj["content"]["rendered"], "html.parser")
+  out = {}
+  for a in soup.find_all("article"):
+    aid = a.get("id", "").replace("post-", "")
+    exc = a.find("div", class_="gb-block-post-grid-excerpt")
+    if exc:
+      for link in exc.find_all("a", class_="gb-block-post-grid-more-link"):
+        link.decompose()
+      for para in exc.find_all("p"):
+        if not para.get_text(strip=True):
+          para.decompose()
+      out[aid] = "".join(str(c) for c in exc.contents).strip()
+  return out
+
+
 def main():
   os.makedirs(OUTPUT_DATA_DIR, exist_ok=True)
 
@@ -30,6 +48,11 @@ def main():
     posts = json.load(f)
   with open(f"{RAW_DIR}/media.json") as f:
     media = json.load(f)
+
+  pages_by_id = {p["id"]: p for p in pages}
+  excerpts_4305 = extract_page_excerpts(pages_by_id.get(4305))
+  excerpts_4167 = extract_page_excerpts(pages_by_id.get(4167))
+  excerpts_6 = extract_page_excerpts(pages_by_id.get(6))
 
   media_by_id = {m["id"]: m for m in media}
   audio_media = {}
@@ -70,7 +93,10 @@ def main():
 
     if orig_audio_url:
       fname = orig_audio_url.split("/")[-1]
-      audio_url = f"/wp-content/uploads/{orig_audio_url.split('/wp-content/uploads/')[-1]}"
+      audio_url = (
+          "/wp-content/uploads/"
+          + orig_audio_url.split("/wp-content/uploads/")[-1]
+      )
       remote_audio_url = f"https://github.com/BillTribble/awake-in/releases/download/v1.0.0/{fname}"
       audio_type = "audio/mpeg"
       ameta = audio_media.get(fname) or audio_media.get(orig_audio_url)
@@ -88,8 +114,15 @@ def main():
         else None
     )
 
-    raw_excerpt = p.get("excerpt", {}).get("rendered", "")
-    soup_exc = BeautifulSoup(raw_excerpt, "html.parser")
+    pid_str = str(post_id)
+    excerpt_html = (
+        excerpts_4305.get(pid_str)
+        or excerpts_4167.get(pid_str)
+        or p.get("excerpt", {}).get("rendered", "").strip()
+    )
+    featured_excerpt_html = excerpts_6.get(pid_str)
+
+    soup_exc = BeautifulSoup(excerpt_html, "html.parser")
     excerpt_text = html.unescape(soup_exc.get_text()).strip()
 
     cleaned_html = clean_content_html(raw_content)
@@ -111,6 +144,8 @@ def main():
         "duration": duration,
         "featuredImage": featured_image,
         "excerptText": excerpt_text,
+        "excerptHtml": excerpt_html,
+        "featuredExcerptHtml": featured_excerpt_html,
         "contentHtml": cleaned_html,
     })
 
@@ -145,6 +180,8 @@ def main():
         f"    duration: {json.dumps(ep['duration'], ensure_ascii=False)},\n"
         f"    featuredImage: {json.dumps(ep['featuredImage'], ensure_ascii=False)},\n"
         f"    excerptText: {json.dumps(ep['excerptText'], ensure_ascii=False)},\n"
+        f"    excerptHtml: {json.dumps(ep['excerptHtml'], ensure_ascii=False)},\n"
+        f"    featuredExcerptHtml: {json.dumps(ep['featuredExcerptHtml'], ensure_ascii=False)},\n"
         f"    contentHtml: {json.dumps(ep['contentHtml'], ensure_ascii=False)},\n"
         "  }"
     )
@@ -160,26 +197,22 @@ def main():
       "  ...ep,\n"
       "  audioUrl: ep.audioUrl ? withBase(ep.audioUrl) : null,\n"
       "  featuredImage: ep.featuredImage ? withBase(ep.featuredImage) : null,\n"
+      "  excerptHtml: withBaseHtml(ep.excerptHtml),\n"
+      "  featuredExcerptHtml: ep.featuredExcerptHtml ? withBaseHtml(ep.featuredExcerptHtml) : null,\n"
       "  contentHtml: withBaseHtml(ep.contentHtml),\n"
       "}));\n\n"
-      "export const getEpisodeBySlug = (slug: string): Episode | undefined =>"
-      " {\n"
+      "export const getEpisodeBySlug = (slug: string): Episode | undefined => {\n"
       "  return episodes.find((ep) => ep.slug === slug);\n"
       "};\n\n"
       "export const getEpisodeById = (id: number): Episode | undefined => {\n"
       "  return episodes.find((ep) => ep.id === id);\n"
       "};\n\n"
-      "export const podcastEpisodes = episodes.filter((ep) => ep.category ==="
-      " 'podcast');\n"
-      "export const blogPosts = episodes.filter((ep) => ep.category ==="
-      " 'blog');\n"
+      "export const podcastEpisodes = episodes.filter((ep) => ep.category === 'podcast');\n"
+      "export const blogPosts = episodes.filter((ep) => ep.category === 'blog');\n"
   )
 
   with open(f"{OUTPUT_DATA_DIR}/episodes.ts", "w") as f:
     f.write(episodes_ts)
-
-  print("Data extraction complete.")
-
 
 if __name__ == "__main__":
   main()

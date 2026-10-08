@@ -62,7 +62,6 @@ async function runAudit() {
 
   // 2. Homepage — Dark mode
   console.log('Switching to Dark mode...');
-  // Click theme toggle button
   await page.evaluate(() => {
     document.documentElement.setAttribute('data-theme', 'dark');
     localStorage.setItem('awake-in-theme', 'dark');
@@ -74,19 +73,13 @@ async function runAudit() {
 
   // 3. Subscribe modal
   console.log('Opening Subscribe Modal...');
-  const subscribeBtn = await page.$('.hero-btn-cta');
-  if (subscribeBtn) {
-    await subscribeBtn.click();
-  } else {
-    // fallback to header button
-    await page.evaluate(() => {
-      const btn = Array.from(document.querySelectorAll('button')).find((b) =>
-        b.textContent.includes('Listen or subscribe')
-      );
-      if (btn) btn.click();
-    });
-  }
-  await page.waitForSelector('.modal-surface', { visible: true });
+  await page.evaluate(() => {
+    const btn = Array.from(document.querySelectorAll('button')).find((b) =>
+      b.textContent.includes('Listen or Subscribe')
+    );
+    if (btn) btn.click();
+  });
+  await page.waitForSelector('.paoc-popup-modal', { visible: true });
   await new Promise((r) => setTimeout(r, 500));
   await checkImages('Subscribe Modal');
   const modalPath = path.join(SCREENSHOT_DIR, 'awake_in_subscribe_modal.png');
@@ -99,27 +92,26 @@ async function runAudit() {
 
   // 4. Episodes page & Bottom Player
   console.log('Auditing Episodes page & Audio Player...');
-  await page.goto(`${BASE_URL}/episodes`, { waitUntil: 'networkidle0' });
+  await page.goto(`${BASE_URL}/%f0%9f%8e%a7-all-episodes`, { waitUntil: 'networkidle0' });
   await checkImages('Episodes Page');
 
-  // Click first "Listen now" button
-  console.log('Clicking Listen now button...');
+  // Navigate to an episode to trigger player
+  console.log('Auditing Episode 10 Detail page...');
+  await page.goto(`${BASE_URL}/2022/04/21/episode-10-retreats/`, { waitUntil: 'networkidle0' });
+  await checkImages('Episode 10 Detail');
+
+  // Click play button on inline player
+  console.log('Clicking Inline Player Play button...');
   await page.evaluate(() => {
-    const btns = Array.from(document.querySelectorAll('button')).filter((b) =>
-      b.textContent.includes('Listen now')
-    );
-    if (btns.length > 0) btns[0].click();
+    const playBtn = document.querySelector('button[aria-label*="Play"]') || document.querySelector('.inline-player button');
+    if (playBtn) playBtn.click();
   });
-  await page.waitForSelector('.audio-player-bar', { visible: true });
   await new Promise((r) => setTimeout(r, 800));
+
   const episodesPath = path.join(SCREENSHOT_DIR, 'awake_in_episodes_player.png');
   await page.screenshot({ path: episodesPath, fullPage: false });
   console.log('Saved:', episodesPath);
 
-  // 5. Episode 10 Detail page
-  console.log('Auditing Episode 10 Detail page...');
-  await page.goto(`${BASE_URL}/2022/04/21/episode-10-retreats/`, { waitUntil: 'networkidle0' });
-  await checkImages('Episode 10 Detail');
   const detailPath = path.join(SCREENSHOT_DIR, 'awake_in_episode_detail.png');
   await page.screenshot({ path: detailPath, fullPage: false });
   console.log('Saved:', detailPath);

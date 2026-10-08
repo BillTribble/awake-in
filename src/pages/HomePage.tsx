@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { siteMeta } from '../data/siteMeta';
 import { podcastEpisodes } from '../data/episodes';
-import { EpisodeCard } from '../components/EpisodeCard';
+import { withBase } from '../utils/basePath';
 
 interface HomePageProps {
   onOpenSubscribe: () => void;
@@ -14,201 +14,370 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenSubscribe }) => {
     .map((id) => podcastEpisodes.find((ep) => ep.id === id))
     .filter((ep): ep is NonNullable<typeof ep> => ep !== undefined);
 
-  // Latest 3 episodes
-  const latestEpisodes = podcastEpisodes.slice(0, 3);
-
   return (
-    <div className="container" style={{ paddingBottom: '80px' }}>
-      {/* Hero Section */}
-      <section className="hero-section" aria-label="Hero banner">
-        <div
-          className="hero-cover"
+    <div className="homepage-wrapper">
+      {/* 1. Hero Section */}
+      <div className="container" style={{ paddingTop: '20px', paddingBottom: '40px' }}>
+        <section
+          className="hero-section"
+          aria-label="Hero banner"
           style={{
+            position: 'relative',
+            borderRadius: '24px',
+            overflow: 'hidden',
+            backgroundColor: '#1b0f55',
             backgroundImage: `url(${siteMeta.hero.desktopBackgroundGif})`,
-          }}
-        >
-          <div className="hero-overlay" />
-          <div className="hero-content">
-            <h1 className="hero-title">{siteMeta.hero.title}</h1>
-            <p className="hero-tagline">{siteMeta.hero.tagline}</p>
-
-            <div className="hero-actions">
-              <button
-                type="button"
-                onClick={onOpenSubscribe}
-                className="hero-btn-cta"
-                aria-label="Listen or subscribe"
-              >
-                {siteMeta.hero.subscribeCtaText}
-              </button>
-
-              <div className="hero-quick-badges">
-                {siteMeta.hero.quickSubscribeIcons.map((item) => (
-                  <a
-                    key={item.platform}
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="quick-badge-item"
-                    title={item.platform}
-                    aria-label={item.platform}
-                  >
-                    <img src={item.icon} alt={item.platform} />
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Episodes Section */}
-      <section style={{ marginBottom: '56px' }}>
-        <div
-          style={{
+            backgroundSize: 'cover',
+            backgroundPosition: 'center bottom',
+            minHeight: '480px',
+            padding: '48px 36px',
             display: 'flex',
-            alignItems: 'center',
+            flexDirection: 'column',
             justifyContent: 'space-between',
-            marginBottom: '24px',
-            flexWrap: 'wrap',
-            gap: '12px',
+            boxShadow: 'none',
           }}
         >
-          <div>
-            <h2 style={{ fontSize: '1.75rem', marginBottom: '4px' }}>Featured episodes 🌱</h2>
-            <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '14px' }}>
-              Hand-picked conversations on meditation, psychology, and personal transformation
-            </p>
-          </div>
-          <Link to="/episodes" className="btn btn-tonal">
-            <span>All 11 episodes</span>
-            <span className="material-symbols-rounded" style={{ fontSize: '18px' }}>
-              arrow_forward
-            </span>
-          </Link>
-        </div>
+          <div
+            className="hero-overlay"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(180deg, rgba(15, 10, 45, 0.4) 0%, rgba(15, 10, 45, 0.85) 100%)',
+              pointerEvents: 'none',
+            }}
+          />
 
-        <div className="card-grid">
-          {featuredEpisodes.map((episode) => (
-            <EpisodeCard key={episode.id} episode={episode} />
-          ))}
-        </div>
-      </section>
-
-      {/* Latest Episodes Preview */}
-      <section style={{ marginBottom: '56px' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: '24px',
-          }}
-        >
-          <h2 style={{ fontSize: '1.5rem' }}>Recent recordings</h2>
-          <Link to="/episodes" style={{ fontSize: '14px', fontWeight: 600 }}>
-            Browse archive →
-          </Link>
-        </div>
-
-        <div className="card-grid">
-          {latestEpisodes.map((episode) => (
-            <EpisodeCard key={episode.id} episode={episode} />
-          ))}
-        </div>
-      </section>
-
-      {/* Hosts Section */}
-      <section
-        style={{
-          backgroundColor: 'var(--md-sys-color-surface-container-low)',
-          borderRadius: '24px',
-          padding: '40px 32px',
-          marginBottom: '40px',
-        }}
-        aria-label="Hosts section"
-      >
-        <div style={{ textAlign: 'center', marginBottom: '36px' }}>
-          <h2 style={{ fontSize: '1.75rem', marginBottom: '8px' }}>🌈 Hosts</h2>
-          <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '14px' }}>
-            Meet the voices exploring contemplation in the modern world
-          </p>
-        </div>
-
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '32px',
-          }}
-        >
-          {siteMeta.hosts.map((host) => (
-            <div
-              key={host.name}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                textAlign: 'center',
-                padding: '24px',
-                borderRadius: '20px',
-                backgroundColor: 'var(--md-sys-color-surface)',
-              }}
-            >
-              <img
-                src={host.avatar}
-                alt={host.name}
+          {/* Top row: 2 columns */}
+          <div
+            style={{
+              position: 'relative',
+              zIndex: 2,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              flexWrap: 'wrap',
+              gap: '20px',
+            }}
+          >
+            <div>
+              <h1
                 style={{
-                  width: '120px',
-                  height: '120px',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  marginBottom: '16px',
-                  backgroundColor: 'var(--md-sys-color-surface-container)',
+                  color: '#ffffff',
+                  fontFamily: "'canada-type-gibson', sans-serif",
+                  fontSize: '2.75rem',
+                  fontWeight: 700,
+                  margin: 0,
                 }}
-              />
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{host.name}</h3>
+              >
+                {siteMeta.hero.title}
+              </h1>
+            </div>
+            <div style={{ maxWidth: '400px' }}>
               <p
                 style={{
-                  fontSize: '14px',
-                  color: 'var(--md-sys-color-on-surface-variant)',
-                  lineHeight: 1.6,
-                  marginBottom: '20px',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  fontSize: '20px',
+                  lineHeight: '1.4',
+                  margin: 0,
                 }}
               >
-                {host.bio}
+                {siteMeta.hero.tagline}
               </p>
-
-              <div style={{ display: 'flex', gap: '10px', marginTop: 'auto' }}>
-                <a
-                  href={host.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-tonal"
-                  style={{ fontSize: '13px', padding: '6px 16px' }}
-                >
-                  <span>Instagram</span>
-                  <span className="material-symbols-rounded" style={{ fontSize: '16px' }}>
-                    open_in_new
-                  </span>
-                </a>
-                {host.mastodon && (
-                  <a
-                    href={host.mastodon}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-tonal"
-                    style={{ fontSize: '13px', padding: '6px 16px' }}
-                  >
-                    <span>Mastodon</span>
-                    <span className="material-symbols-rounded" style={{ fontSize: '16px' }}>
-                      open_in_new
-                    </span>
-                  </a>
-                )}
-              </div>
             </div>
+          </div>
+
+          {/* Bottom row: CTA button & icons */}
+          <div style={{ position: 'relative', zIndex: 2, marginTop: '120px' }}>
+            <button
+              type="button"
+              onClick={onOpenSubscribe}
+              style={{
+                backgroundColor: '#ffe724',
+                color: '#412eb4',
+                boxShadow: '0 4px 0 0 #e8680a',
+                borderRadius: '40px',
+                padding: '10px 32px',
+                fontSize: '22px',
+                fontWeight: 600,
+                fontFamily: "'canada-type-gibson', sans-serif",
+                border: 'none',
+                cursor: 'pointer',
+                display: 'inline-block',
+                transition: 'transform 0.15s ease',
+              }}
+            >
+              {siteMeta.hero.subscribeCtaText}
+            </button>
+
+            {/* Quick subscribe icons below button with 20px gap */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '20px' }}>
+              {siteMeta.hero.quickSubscribeIcons.map((item) => (
+                <button
+                  key={item.platform}
+                  type="button"
+                  onClick={onOpenSubscribe}
+                  title={item.platform}
+                  aria-label={item.platform}
+                  style={{
+                    width: '50px',
+                    height: '50px',
+                    borderRadius: '20px',
+                    backgroundColor: '#5241c888',
+                    padding: '10px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: 'none',
+                    cursor: 'pointer',
+                    backdropFilter: 'blur(8px)',
+                    transition: 'background-color 0.15s ease',
+                  }}
+                >
+                  <img src={item.icon} alt={item.platform} style={{ width: '28px', height: '28px', display: 'block' }} />
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* 2. Featured Episodes Section (max-width: 780px; margin: 0 auto;) */}
+      <section style={{ maxWidth: '780px', margin: '0 auto', padding: '0 24px 60px' }}>
+        <h2
+          style={{
+            fontFamily: "'canada-type-gibson', sans-serif",
+            fontSize: '32px',
+            fontWeight: 700,
+            marginBottom: '36px',
+            color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))',
+          }}
+        >
+          Featured episodes 🌱
+        </h2>
+
+        {/* 4 featured episodes stacked vertically */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+          {featuredEpisodes.map((episode) => (
+            <article key={episode.id} className="featured-episode-item" style={{ borderBottom: '1px solid var(--md-sys-color-surface-container-highest)', paddingBottom: '40px' }}>
+              {episode.featuredImage && (
+                <Link to={episode.originalPath} style={{ display: 'block', marginBottom: '20px', overflow: 'hidden', borderRadius: '12px' }}>
+                  <img
+                    src={episode.featuredImage}
+                    alt={episode.title}
+                    style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }}
+                  />
+                </Link>
+              )}
+
+              <h3 style={{ fontSize: '26px', fontWeight: 700, marginBottom: '10px' }}>
+                <Link to={episode.originalPath} style={{ color: 'var(--theme-palette-color-4, rgba(44, 62, 80, 1))' }}>
+                  {episode.title}
+                </Link>
+              </h3>
+
+              <div style={{ marginBottom: '14px' }}>
+                <time
+                  dateTime={episode.date}
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                  }}
+                >
+                  {episode.formattedDate}
+                </time>
+              </div>
+
+              {/* Verbatim excerpt */}
+              <div
+                className="entry-excerpt"
+                style={{ fontSize: '18px', lineHeight: '1.65', marginBottom: '16px' }}
+                dangerouslySetInnerHTML={{ __html: episode.featuredExcerptHtml || episode.excerptHtml }}
+              />
+
+              <p style={{ margin: 0 }}>
+                <Link
+                  to={episode.originalPath}
+                  className="gb-block-post-grid-more-link"
+                  style={{
+                    fontFamily: "'canada-type-gibson', sans-serif",
+                    fontWeight: 700,
+                    fontSize: '18px',
+                    color: 'var(--theme-palette-color-1, #624aca)',
+                    textDecoration: 'none',
+                  }}
+                >
+                  Listen Now ▶️{' '}
+                </Link>
+              </p>
+            </article>
           ))}
+        </div>
+
+        {/* Centered purple pill button: All episodes */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '48px' }}>
+          <Link
+            to="/%f0%9f%8e%a7-all-episodes"
+            className="wp-block-button__link"
+            style={{
+              backgroundColor: '#624aca',
+              color: '#ffffff',
+              padding: '12px 36px',
+              borderRadius: '50px',
+              fontSize: '18px',
+              fontWeight: 600,
+              fontFamily: "'canada-type-gibson', sans-serif",
+              textDecoration: 'none',
+              display: 'inline-block',
+            }}
+          >
+            All episodes
+          </Link>
+        </div>
+      </section>
+
+      {/* 3. Hosts Section (🌈 Hosts) */}
+      <section
+        style={{
+          backgroundColor: '#230c80',
+          color: '#ffffff',
+          padding: '60px 20px',
+        }}
+      >
+        <div style={{ maxWidth: '1140px', margin: '0 auto' }}>
+          <h2
+            style={{
+              fontFamily: "'canada-type-gibson', sans-serif",
+              color: '#ffaedf',
+              fontSize: '36px',
+              fontWeight: 700,
+              marginBottom: '48px',
+              textAlign: 'center',
+            }}
+          >
+            🌈 Hosts
+          </h2>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: '48px',
+            }}
+          >
+            {/* Jasmine Che */}
+            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <img
+                src={withBase('/wp-content/uploads/2020/05/jasmine.png')}
+                alt="Jasmine Che"
+                style={{
+                  width: '200px',
+                  height: '200px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  marginBottom: '20px',
+                  display: 'block',
+                }}
+              />
+              <h4
+                style={{
+                  fontFamily: "'canada-type-gibson', sans-serif",
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  color: '#ffffff',
+                  marginBottom: '12px',
+                }}
+              >
+                Jasmine Che
+              </h4>
+              <p
+                style={{
+                  fontSize: '16px',
+                  lineHeight: '1.6',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  marginBottom: '24px',
+                  maxWidth: '440px',
+                }}
+              >
+                Jasmine is the youngest Search Inside Yourself™ mindfulness teacher, a heart-based multi-business venturer, plant mum to ~150 babies and is working back to 3 hours of meditation a day. When she ever finds any spare time, she practices Dharma yoga and acrobatics.
+              </p>
+              <a
+                href="https://www.instagram.com/thelifeofjasmineche/"
+                target="_blank"
+                rel="noreferrer noopener"
+                style={{
+                  border: '2px solid #ffffff',
+                  borderRadius: '50px',
+                  color: '#ffffff',
+                  padding: '8px 24px',
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  fontFamily: "'canada-type-gibson', sans-serif",
+                  textDecoration: 'none',
+                  display: 'inline-block',
+                }}
+              >
+                Jasmine’s Instagram
+              </a>
+            </div>
+
+            {/* Bill Tribble */}
+            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <img
+                src={withBase('/wp-content/uploads/2020/03/bill-1.png')}
+                alt="Bill Tribble"
+                style={{
+                  width: '200px',
+                  height: '200px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  marginBottom: '20px',
+                  display: 'block',
+                }}
+              />
+              <h4
+                style={{
+                  fontFamily: "'canada-type-gibson', sans-serif",
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  color: '#ffffff',
+                  marginBottom: '12px',
+                }}
+              >
+                Bill Tribble
+              </h4>
+              <p
+                style={{
+                  fontSize: '16px',
+                  lineHeight: '1.6',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  marginBottom: '24px',
+                  maxWidth: '440px',
+                }}
+              >
+                Bill is a designer, musician, and technologist. He got started in mindfulness via silent retreats in the Goenka tradition. While he’s put in thousands of hours of meditation, he’s probably spent way more time playing computer games and wishes he hadn’t. Find him on <a href="https://mastodon.design/@bill_tribble" target="_blank" rel="noreferrer noopener" className="ek-link" style={{ color: '#ffaedf', textDecoration: 'underline' }}>Mastodon</a> or check him out on:
+              </p>
+              <a
+                href="https://www.instagram.com/bill_tribble/"
+                target="_blank"
+                rel="noreferrer noopener"
+                style={{
+                  border: '2px solid #ffffff',
+                  borderRadius: '50px',
+                  color: '#ffffff',
+                  padding: '8px 24px',
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  fontFamily: "'canada-type-gibson', sans-serif",
+                  textDecoration: 'none',
+                  display: 'inline-block',
+                }}
+              >
+                Bill’s Instagram
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     </div>

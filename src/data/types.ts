@@ -15,6 +15,8 @@ export interface Episode {
   duration: string | null;
   featuredImage: string | null;
   excerptText: string;
+  excerptHtml: string;
+  featuredExcerptHtml: string | null;
   contentHtml: string;
 }
 

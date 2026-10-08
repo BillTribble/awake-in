@@ -1,80 +1,88 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { siteMeta } from '../data/siteMeta';
-
 import { withBase } from '../utils/basePath';
 
 interface HeaderProps {
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
-  onOpenSubscribe: () => void;
+  onOpenSubscribe?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme, onOpenSubscribe }) => {
+export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
   return (
-    <header className="site-header">
-      <div className="container header-inner">
-        {/* Brand */}
-        <Link to="/" className="brand" aria-label="Awake In Home">
+    <header className="site-header" style={{ padding: '16px 0', borderBottom: '1px solid var(--md-sys-color-surface-container-highest)' }}>
+      <div className="container header-inner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {/* Brand: Verbatim original wordmark */}
+        <Link to="/" className="brand" aria-label="Awake In Home" style={{ display: 'inline-block' }}>
           <img
-            src={withBase('/wp-content/uploads/2023/02/cropped-awake-in-logo-lettermark.png')}
-            alt="Awake In logo"
-            className="brand-logo"
-            width={36}
-            height={36}
+            src={withBase('/wp-content/uploads/2020/03/awake-in-logo.png')}
+            alt="Awake In"
+            style={{ maxHeight: '63px', width: 'auto', display: 'block' }}
           />
-          <span className="brand-text">{siteMeta.title}</span>
         </Link>
 
-        {/* Navigation Tabs (AI Studio Pill Style) */}
-        <nav className="nav-tabs" aria-label="Primary navigation">
+        {/* Right side navigation menu (#menu-really-main): ONLY the 3 verbatim links from awake-in.com */}
+        <nav
+          id="menu-really-main"
+          style={{ display: 'flex', alignItems: 'center', gap: '28px' }}
+          aria-label="Primary navigation"
+        >
           <NavLink
-            to="/"
-            end
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            to="/%f0%9f%8e%a7-all-episodes"
+            className={({ isActive }) => `ct-menu-link ${isActive ? 'active' : ''}`}
+            style={{
+              fontFamily: "'canada-type-gibson', sans-serif",
+              fontWeight: 700,
+              fontSize: '20px',
+              color: 'var(--theme-palette-color-3, rgba(44, 62, 80, 0.9))',
+              textDecoration: 'none',
+            }}
           >
-            Home
-          </NavLink>
-          <NavLink
-            to="/episodes"
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-          >
-            All episodes
+            🎧 All episodes
           </NavLink>
           <NavLink
             to="/blog"
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            className={({ isActive }) => `ct-menu-link ${isActive ? 'active' : ''}`}
+            style={{
+              fontFamily: "'canada-type-gibson', sans-serif",
+              fontWeight: 700,
+              fontSize: '20px',
+              color: 'var(--theme-palette-color-3, rgba(44, 62, 80, 0.9))',
+              textDecoration: 'none',
+            }}
           >
-            Blog
+            ✍️ Blog
           </NavLink>
           <NavLink
             to="/contact"
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            className={({ isActive }) => `ct-menu-link ${isActive ? 'active' : ''}`}
+            style={{
+              fontFamily: "'canada-type-gibson', sans-serif",
+              fontWeight: 700,
+              fontSize: '20px',
+              color: 'var(--theme-palette-color-3, rgba(44, 62, 80, 0.9))',
+              textDecoration: 'none',
+            }}
           >
-            Contact
+            💌 Contact
           </NavLink>
-          <NavLink
-            to="/rss"
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-          >
-            Podcast RSS
-          </NavLink>
-        </nav>
 
-        {/* Header Actions */}
-        <div className="header-actions">
-          {/* Subscribe CTA Button */}
-          <button
-            type="button"
-            onClick={onOpenSubscribe}
-            className="btn btn-tonal"
-            aria-label="Listen or subscribe to podcast"
+          {/* Search Icon Button */}
+          <Link
+            to="/%f0%9f%8e%a7-all-episodes"
+            aria-label="Search"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--theme-palette-color-3, rgba(44, 62, 80, 0.9))',
+              textDecoration: 'none',
+            }}
           >
-            <span className="material-symbols-rounded filled" style={{ fontSize: '18px' }}>
-              podcasts
+            <span className="material-symbols-rounded" style={{ fontSize: '24px' }}>
+              search
             </span>
-            <span>Listen or subscribe</span>
-          </button>
+          </Link>
 
           {/* Light / Dark Mode Toggle Button */}
           <button
@@ -83,12 +91,25 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme, onOpenSubs
             className="btn-icon"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            style={{
+              width: '36px',
+              height: '36px',
+              padding: 0,
+              borderRadius: '50%',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              color: 'var(--theme-palette-color-3, rgba(44, 62, 80, 0.9))',
+            }}
           >
-            <span className="material-symbols-rounded">
+            <span className="material-symbols-rounded" style={{ fontSize: '20px' }}>
               {theme === 'light' ? 'dark_mode' : 'light_mode'}
             </span>
           </button>
-        </div>
+        </nav>
       </div>
     </header>
   );
