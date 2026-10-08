@@ -1,6 +1,7 @@
 import { Episode } from './types';
+import { withBase, withBaseHtml } from '../utils/basePath';
 
-export const episodes: Episode[] = [
+const rawEpisodes: Episode[] = [
   {
     id: 4395,
     slug: "episode-10-retreats",
@@ -231,6 +232,13 @@ export const episodes: Episode[] = [
   },
 ];
 
+export const episodes: Episode[] = rawEpisodes.map((ep) => ({
+  ...ep,
+  audioUrl: ep.audioUrl ? withBase(ep.audioUrl) : null,
+  featuredImage: ep.featuredImage ? withBase(ep.featuredImage) : null,
+  contentHtml: withBaseHtml(ep.contentHtml),
+}));
+
 export const getEpisodeBySlug = (slug: string): Episode | undefined => {
   return episodes.find((ep) => ep.slug === slug);
 };
@@ -241,3 +249,4 @@ export const getEpisodeById = (id: number): Episode | undefined => {
 
 export const podcastEpisodes = episodes.filter((ep) => ep.category === 'podcast');
 export const blogPosts = episodes.filter((ep) => ep.category === 'blog');
+

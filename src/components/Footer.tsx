@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { siteMeta } from '../data/siteMeta';
 
+import { withBase } from '../utils/basePath';
+
 export const Footer: React.FC = () => {
   return (
     <footer className="site-footer">
@@ -18,7 +20,7 @@ export const Footer: React.FC = () => {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
               <img
-                src="/wp-content/uploads/2023/02/cropped-awake-in-logo-lettermark.png"
+                src={withBase('/wp-content/uploads/2023/02/cropped-awake-in-logo-lettermark.png')}
                 alt="Awake In logo"
                 style={{ width: '32px', height: '32px', borderRadius: '50%' }}
               />
@@ -62,7 +64,7 @@ export const Footer: React.FC = () => {
                 </a>
               ))}
               <a
-                href="/podcasts/awake-in/feed/index.xml"
+                href={withBase('/podcasts/awake-in/feed/index.xml')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="badge"
@@ -71,7 +73,7 @@ export const Footer: React.FC = () => {
                 <span>Podcast RSS</span>
               </a>
               <a
-                href="/feed.xml"
+                href={withBase('/feed.xml')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="badge"

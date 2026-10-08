@@ -151,10 +151,17 @@ def main():
     ep_entries.append(entry)
 
   episodes_ts = (
-      "import { Episode } from './types';\n\n"
-      "export const episodes: Episode[] = [\n"
+      "import { Episode } from './types';\n"
+      "import { withBase, withBaseHtml } from '../utils/basePath';\n\n"
+      "const rawEpisodes: Episode[] = [\n"
       + ",\n".join(ep_entries)
       + ",\n];\n\n"
+      "export const episodes: Episode[] = rawEpisodes.map((ep) => ({\n"
+      "  ...ep,\n"
+      "  audioUrl: ep.audioUrl ? withBase(ep.audioUrl) : null,\n"
+      "  featuredImage: ep.featuredImage ? withBase(ep.featuredImage) : null,\n"
+      "  contentHtml: withBaseHtml(ep.contentHtml),\n"
+      "}));\n\n"
       "export const getEpisodeBySlug = (slug: string): Episode | undefined =>"
       " {\n"
       "  return episodes.find((ep) => ep.slug === slug);\n"

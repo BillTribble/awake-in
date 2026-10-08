@@ -126,11 +126,11 @@ export const AudioPlayerBar: React.FC = () => {
             <button
               type="button"
               className="btn-icon"
-              onClick={() => skip(-15)}
-              aria-label="Skip back 15 seconds"
-              title="Skip back 15s"
+              onClick={() => skip(-10)}
+              aria-label="Skip back 10 seconds"
+              title="Skip back 10s"
             >
-              <span className="material-symbols-rounded">replay_15</span>
+              <span className="material-symbols-rounded">replay_10</span>
             </button>
             <button
               type="button"
@@ -147,11 +147,11 @@ export const AudioPlayerBar: React.FC = () => {
             <button
               type="button"
               className="btn-icon"
-              onClick={() => skip(15)}
-              aria-label="Skip forward 15 seconds"
-              title="Skip forward 15s"
+              onClick={() => skip(10)}
+              aria-label="Skip forward 10 seconds"
+              title="Skip forward 10s"
             >
-              <span className="material-symbols-rounded">forward_15</span>
+              <span className="material-symbols-rounded">forward_10</span>
             </button>
           </div>
 

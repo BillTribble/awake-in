@@ -2,6 +2,8 @@ import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { siteMeta } from '../data/siteMeta';
 
+import { withBase } from '../utils/basePath';
+
 interface HeaderProps {
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
@@ -15,7 +17,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme, onOpenSubs
         {/* Brand */}
         <Link to="/" className="brand" aria-label="Awake In Home">
           <img
-            src="/wp-content/uploads/2023/02/cropped-awake-in-logo-lettermark.png"
+            src={withBase('/wp-content/uploads/2023/02/cropped-awake-in-logo-lettermark.png')}
             alt="Awake In logo"
             className="brand-logo"
             width={36}

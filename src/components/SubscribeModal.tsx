@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { siteMeta } from '../data/siteMeta';
+import { withBase } from '../utils/basePath';
 
 interface SubscribeModalProps {
   isOpen: boolean;
@@ -159,11 +160,11 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({ isOpen, onClose 
 
         {/* Links to inspect preserved XML feeds */}
         <div style={{ display: 'flex', gap: '16px', fontSize: '13px', justifyContent: 'center' }}>
-          <a href="/podcasts/awake-in/feed/index.xml" target="_blank" rel="noopener noreferrer">
+          <a href={withBase('/podcasts/awake-in/feed/index.xml')} target="_blank" rel="noopener noreferrer">
             View podcast feed XML
           </a>
           <span style={{ color: 'var(--md-sys-color-outline-variant)' }}>•</span>
-          <a href="/feed.xml" target="_blank" rel="noopener noreferrer">
+          <a href={withBase('/feed.xml')} target="_blank" rel="noopener noreferrer">
             View site feed XML
           </a>
         </div>

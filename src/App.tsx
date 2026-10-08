@@ -12,6 +12,8 @@ import { PostDetailPage } from './pages/PostDetailPage';
 import { ContactPage } from './pages/ContactPage';
 import { FeedInfoPage } from './pages/FeedInfoPage';
 
+import { BASE_PATH } from './utils/basePath';
+
 export const App: React.FC = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('awake-in-theme');
@@ -32,7 +34,7 @@ export const App: React.FC = () => {
 
   return (
     <AudioPlayerProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={BASE_PATH || '/'}>
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           <Header
             theme={theme}

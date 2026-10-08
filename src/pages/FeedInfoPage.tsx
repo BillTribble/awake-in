@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { podcastEpisodes } from '../data/episodes';
+import { withBase } from '../utils/basePath';
 
 export const FeedInfoPage: React.FC = () => {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
@@ -59,7 +60,7 @@ export const FeedInfoPage: React.FC = () => {
               <h3 style={{ fontSize: '1.2rem' }}>{feed.title}</h3>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <a
-                  href={feed.path}
+                  href={withBase(feed.path)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn-tonal"
@@ -73,7 +74,7 @@ export const FeedInfoPage: React.FC = () => {
                 <button
                   type="button"
                   className="btn btn-tonal"
-                  onClick={() => handleCopy(window.location.origin + feed.path, idx)}
+                  onClick={() => handleCopy(window.location.origin + withBase(feed.path), idx)}
                   style={{ fontSize: '12.5px', padding: '5px 12px' }}
                 >
                   <span className="material-symbols-rounded" style={{ fontSize: '16px' }}>
@@ -100,7 +101,7 @@ export const FeedInfoPage: React.FC = () => {
                 wordBreak: 'break-all',
               }}
             >
-              {feed.path}
+              {withBase(feed.path)}
             </code>
           </div>
         ))}
@@ -141,7 +142,7 @@ export const FeedInfoPage: React.FC = () => {
                     </td>
                     <td style={{ padding: '12px 16px' }}>
                       <a
-                        href={ep.audioUrl || '#'}
+                        href={ep.audioUrl ? withBase(ep.audioUrl) : '#'}
                         style={{ fontFamily: 'monospace', fontSize: '12px' }}
                       >
                         {ep.audioUrl?.split('/').pop()}

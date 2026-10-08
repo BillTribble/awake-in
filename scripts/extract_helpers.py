@@ -131,6 +131,7 @@ export interface SiteMeta {
 """
 
 SITE_META_TS_TEMPLATE = """import { SiteMeta } from './types';
+import { withBase } from '../utils/basePath';
 
 export const siteMeta: SiteMeta = {
   title: 'Awake In',
@@ -145,30 +146,30 @@ export const siteMeta: SiteMeta = {
     {
       platform: 'Apple Podcasts',
       url: 'https://podcasts.apple.com/gb/podcast/awake-in/id1505822560',
-      icon: '/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Apple-Podcasts.png',
-      quickIcon: '/wp-content/uploads/2020/05/social-music-podcast.svg',
+      icon: withBase('/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Apple-Podcasts.png'),
+      quickIcon: withBase('/wp-content/uploads/2020/05/social-music-podcast.svg'),
     },
     {
       platform: 'Spotify',
       url: 'https://open.spotify.com/show/3yy3g4AhT9lBueGWLXFSjk',
-      icon: '/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Spotify.png',
-      quickIcon: '/wp-content/uploads/2020/05/social-music-spotify-2.svg',
+      icon: withBase('/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Spotify.png'),
+      quickIcon: withBase('/wp-content/uploads/2020/05/social-music-spotify-2.svg'),
     },
     {
       platform: 'Google Podcasts',
       url: 'https://podcasts.google.com/?feed=aHR0cDovL3d3dy5hd2FrZS1pbi5jb20vZmVlZC8',
-      icon: '/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Google-Podcasts.png',
+      icon: withBase('/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Google-Podcasts.png'),
     },
     {
       platform: 'Stitcher',
       url: 'https://www.stitcher.com/podcast/awake-in',
-      icon: '/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Stitcher.png',
+      icon: withBase('/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/Stitcher.png'),
     },
     {
       platform: 'RSS',
       url: 'https://awake-in.com/podcasts/awake-in/feed/',
-      icon: '/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/RSS.png',
-      quickIcon: '/wp-content/uploads/2020/05/rss-feed.svg',
+      icon: withBase('/wp-content/plugins/podcast-subscribe-buttons/assets/img/icons/RSS.png'),
+      quickIcon: withBase('/wp-content/uploads/2020/05/rss-feed.svg'),
     },
   ],
   socialLinks: [
@@ -186,23 +187,23 @@ export const siteMeta: SiteMeta = {
   hero: {
     title: 'Awake In Podcast',
     tagline: 'Chats about mindfulness, wellness, and awakening.',
-    desktopBackgroundGif: '/wp-content/uploads/2020/06/Awake_Animation_V2.2020-06-07-18_20_36.gif',
-    mobileAnimationGif: '/wp-content/uploads/2020/06/Awake_Animation_V2-mobile.gif',
+    desktopBackgroundGif: withBase('/wp-content/uploads/2020/06/Awake_Animation_V2.2020-06-07-18_20_36.gif'),
+    mobileAnimationGif: withBase('/wp-content/uploads/2020/06/Awake_Animation_V2-mobile.gif'),
     subscribeCtaText: 'Listen or Subscribe',
     quickSubscribeIcons: [
       {
         platform: 'Apple Podcasts',
-        icon: '/wp-content/uploads/2020/05/social-music-podcast.svg',
+        icon: withBase('/wp-content/uploads/2020/05/social-music-podcast.svg'),
         url: 'https://podcasts.apple.com/gb/podcast/awake-in/id1505822560',
       },
       {
         platform: 'Spotify',
-        icon: '/wp-content/uploads/2020/05/social-music-spotify-2.svg',
+        icon: withBase('/wp-content/uploads/2020/05/social-music-spotify-2.svg'),
         url: 'https://open.spotify.com/show/3yy3g4AhT9lBueGWLXFSjk',
       },
       {
         platform: 'RSS',
-        icon: '/wp-content/uploads/2020/05/rss-feed.svg',
+        icon: withBase('/wp-content/uploads/2020/05/rss-feed.svg'),
         url: 'https://awake-in.com/podcasts/awake-in/feed/',
       },
     ],
@@ -214,13 +215,13 @@ export const siteMeta: SiteMeta = {
   hosts: [
     {
       name: 'Jasmine Che',
-      avatar: '/wp-content/uploads/2020/05/jasmine.png',
+      avatar: withBase('/wp-content/uploads/2020/05/jasmine.png'),
       bio: 'Jasmine is the youngest Search Inside Yourself™ mindfulness teacher, a heart-based multi-business venturer, plant mum to ~150 babies and is working back to 3 hours of meditation a day. When she ever finds any spare time, she practices Dharma yoga and acrobatics.',
       instagram: 'https://www.instagram.com/thelifeofjasmineche/',
     },
     {
       name: 'Bill Tribble',
-      avatar: '/wp-content/uploads/2020/03/bill-1.png',
+      avatar: withBase('/wp-content/uploads/2020/03/bill-1.png'),
       bio: 'Bill is a designer, musician, and technologist. He got started in mindfulness via silent retreats in the Goenka tradition. While he’s put in thousands of hours of meditation, he’s probably spent way more time playing computer games and wishes he hadn’t.',
       instagram: 'https://www.instagram.com/bill_tribble/',
       mastodon: 'https://mastodon.design/@bill_tribble',

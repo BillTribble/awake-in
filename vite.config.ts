@@ -5,6 +5,11 @@ import path from 'node:path';
 
 function awakeInStaticPlugin(): Plugin {
   const handleCustomRoutes = (req: any, res: any, next: any) => {
+    // Strip subpath /awake-in if requested in dev/preview
+    if (req.url && (req.url === '/awake-in' || req.url.startsWith('/awake-in/'))) {
+      req.url = req.url.replace(/^\/awake-in/, '') || '/';
+    }
+
     const url = req.url ? req.url.split('?')[0] : '';
 
     // a) Serves /feed and /feed/ from public/feed.xml
@@ -92,7 +97,8 @@ function awakeInStaticPlugin(): Plugin {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? (process.env.VITE_BASE_PATH || '/awake-in/') : '/',
   plugins: [react(), awakeInStaticPlugin()],
   server: {
     port: 3005,
@@ -116,4 +122,4 @@ export default defineConfig({
       'Expires': '0',
     },
   },
-});
+}));
