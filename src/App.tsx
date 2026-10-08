@@ -10,7 +10,6 @@ import { EpisodesPage } from './pages/EpisodesPage';
 import { BlogPage } from './pages/BlogPage';
 import { PostDetailPage } from './pages/PostDetailPage';
 import { ContactPage } from './pages/ContactPage';
-import { FeedInfoPage } from './pages/FeedInfoPage';
 
 import { BASE_PATH } from './utils/basePath';
 
@@ -52,7 +51,6 @@ export const App: React.FC = () => {
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<PostDetailPage onOpenSubscribe={() => setIsSubscribeOpen(true)} />} />
               <Route path="/contact" element={<ContactPage />} />
-              <Route path="/rss" element={<FeedInfoPage />} />
               {/* WordPress historical permalinks: /:year/:month/:day/:slug/ */}
               <Route
                 path="/:year/:month/:day/:slug"

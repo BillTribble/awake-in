@@ -123,15 +123,7 @@ async function runAudit() {
   await page.screenshot({ path: episodesPath, fullPage: false });
   console.log('Saved:', episodesPath);
 
-  // 6. RSS Page
-  console.log('Auditing RSS Explorer page...');
-  await page.goto(`${BASE_URL}/rss`, { waitUntil: 'networkidle0' });
-  await checkImages('RSS Page');
-  const rssPath = path.join(SCREENSHOT_DIR, 'awake_in_rss_page.png');
-  await page.screenshot({ path: rssPath, fullPage: false });
-  console.log('Saved:', rssPath);
-
-  // 7. Contact Page
+  // 6. Contact Page
   console.log('Auditing Contact page...');
   await page.goto(`${BASE_URL}/contact`, { waitUntil: 'networkidle0' });
   await checkImages('Contact Page');
@@ -139,7 +131,7 @@ async function runAudit() {
   await page.screenshot({ path: contactPath, fullPage: false });
   console.log('Saved:', contactPath);
 
-  // 8. Episode 09 — Centered YouTube Video Embed in Post Page
+  // 7. Episode 09 — Centered YouTube Video Embed in Post Page
   console.log('Auditing Episode 09 Centered YouTube Video...');
   await page.goto(`${BASE_URL}/2021/10/11/episode-09-reunion/`, { waitUntil: 'networkidle2' });
   await page.evaluate(() => {
@@ -169,7 +161,6 @@ async function runAudit() {
     'awake_in_subscribe_modal.png',
     'awake_in_episodes_player.png',
     'awake_in_episode_detail.png',
-    'awake_in_rss_page.png',
     'awake_in_contact_page.png',
     'awake_in_youtube_centered.png',
   ];

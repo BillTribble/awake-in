@@ -12,12 +12,18 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
   return (
     <header className="site-header" style={{ padding: '16px 0', borderBottom: '1px solid var(--md-sys-color-surface-container-highest)' }}>
       <div className="container header-inner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        {/* Brand: Verbatim original wordmark */}
+        {/* Brand: Verbatim original wordmark (inverted in dark mode) */}
         <Link to="/" className="brand" aria-label="Awake In Home" style={{ display: 'inline-block' }}>
           <img
             src={withBase('/wp-content/uploads/2020/03/awake-in-logo.png')}
             alt="Awake In"
-            style={{ maxHeight: '63px', width: 'auto', display: 'block' }}
+            style={{
+              maxHeight: '63px',
+              width: 'auto',
+              display: 'block',
+              filter: theme === 'dark' ? 'invert(1)' : 'none',
+              mixBlendMode: theme === 'dark' ? 'screen' : 'normal',
+            }}
           />
         </Link>
 
