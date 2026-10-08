@@ -139,6 +139,18 @@ async function runAudit() {
   await page.screenshot({ path: contactPath, fullPage: false });
   console.log('Saved:', contactPath);
 
+  // 8. Episode 09 — Centered YouTube Video Embed in Post Page
+  console.log('Auditing Episode 09 Centered YouTube Video...');
+  await page.goto(`${BASE_URL}/2021/10/11/episode-09-reunion/`, { waitUntil: 'networkidle2' });
+  await page.evaluate(() => {
+    const embed = document.querySelector('figure.wp-block-embed') || document.querySelector('iframe[src*="youtube"]');
+    if (embed) embed.scrollIntoView({ behavior: 'instant', block: 'center' });
+  });
+  await new Promise((r) => setTimeout(r, 800));
+  const ytPath = path.join(SCREENSHOT_DIR, 'awake_in_youtube_centered.png');
+  await page.screenshot({ path: ytPath, fullPage: false });
+  console.log('Saved:', ytPath);
+
   await browser.close();
 
   console.log('\n=== AUDIT RESULTS ===');
@@ -159,6 +171,7 @@ async function runAudit() {
     'awake_in_episode_detail.png',
     'awake_in_rss_page.png',
     'awake_in_contact_page.png',
+    'awake_in_youtube_centered.png',
   ];
 
   console.log('\n=== SCREENSHOT ARTIFACTS ===');
