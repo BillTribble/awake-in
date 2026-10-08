@@ -43,7 +43,6 @@ export const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode }) => {
             <img
               src={episode.featuredImage}
               alt=""
-              loading="lazy"
               style={{
                 width: '100%',
                 height: '100%',

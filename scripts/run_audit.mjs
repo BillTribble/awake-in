@@ -1,0 +1,180 @@
+import puppeteer from 'puppeteer-core';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const SCREENSHOT_DIR = '/usr/local/google/home/tribble/.gemini/jetski/brain/21bad6fe-046e-4cdd-b090-71465ff227e0';
+const BASE_URL = 'http://localhost:3005';
+
+async function runAudit() {
+  console.log('Starting Puppeteer Chrome audit on', BASE_URL);
+
+  const browser = await puppeteer.launch({
+    executablePath: '/usr/bin/google-chrome',
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
+  });
+
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1440, height: 900 });
+
+  const consoleErrors = [];
+  const pageErrors = [];
+
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') {
+      consoleErrors.push(msg.text());
+      console.error('Browser console.error:', msg.text());
+    }
+  });
+
+  page.on('pageerror', (err) => {
+    pageErrors.push(err.toString());
+    console.error('Browser pageerror:', err.toString());
+  });
+
+  async function checkImages(pageName) {
+    const broken = await page.evaluate(() => {
+      const imgs = Array.from(document.querySelectorAll('img'));
+      return imgs
+        .filter((img) => !img.complete || img.naturalWidth === 0)
+        .map((img) => img.src || img.getAttribute('src'));
+    });
+    if (broken.length > 0) {
+      console.warn(`[${pageName}] Found ${broken.length} broken images:`, broken);
+    } else {
+      console.log(`[${pageName}] All images loaded successfully.`);
+    }
+    return broken;
+  }
+
+  // 1. Homepage — Light mode
+  console.log('Auditing Homepage (Light mode)...');
+  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
+  await page.evaluate(() => {
+    document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('awake-in-theme', 'light');
+  });
+  await new Promise((r) => setTimeout(r, 600));
+  await checkImages('Homepage Light');
+  const homeLightPath = path.join(SCREENSHOT_DIR, 'awake_in_home_light.png');
+  await page.screenshot({ path: homeLightPath, fullPage: false });
+  console.log('Saved:', homeLightPath);
+
+  // 2. Homepage — Dark mode
+  console.log('Switching to Dark mode...');
+  // Click theme toggle button
+  await page.evaluate(() => {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('awake-in-theme', 'dark');
+  });
+  await new Promise((r) => setTimeout(r, 600));
+  const homeDarkPath = path.join(SCREENSHOT_DIR, 'awake_in_home_dark.png');
+  await page.screenshot({ path: homeDarkPath, fullPage: false });
+  console.log('Saved:', homeDarkPath);
+
+  // 3. Subscribe modal
+  console.log('Opening Subscribe Modal...');
+  const subscribeBtn = await page.$('.hero-btn-cta');
+  if (subscribeBtn) {
+    await subscribeBtn.click();
+  } else {
+    // fallback to header button
+    await page.evaluate(() => {
+      const btn = Array.from(document.querySelectorAll('button')).find((b) =>
+        b.textContent.includes('Listen or subscribe')
+      );
+      if (btn) btn.click();
+    });
+  }
+  await page.waitForSelector('.modal-surface', { visible: true });
+  await new Promise((r) => setTimeout(r, 500));
+  await checkImages('Subscribe Modal');
+  const modalPath = path.join(SCREENSHOT_DIR, 'awake_in_subscribe_modal.png');
+  await page.screenshot({ path: modalPath, fullPage: false });
+  console.log('Saved:', modalPath);
+
+  // Close modal via Escape
+  await page.keyboard.press('Escape');
+  await new Promise((r) => setTimeout(r, 400));
+
+  // 4. Episodes page & Bottom Player
+  console.log('Auditing Episodes page & Audio Player...');
+  await page.goto(`${BASE_URL}/episodes`, { waitUntil: 'networkidle0' });
+  await checkImages('Episodes Page');
+
+  // Click first "Listen now" button
+  console.log('Clicking Listen now button...');
+  await page.evaluate(() => {
+    const btns = Array.from(document.querySelectorAll('button')).filter((b) =>
+      b.textContent.includes('Listen now')
+    );
+    if (btns.length > 0) btns[0].click();
+  });
+  await page.waitForSelector('.audio-player-bar', { visible: true });
+  await new Promise((r) => setTimeout(r, 800));
+  const episodesPath = path.join(SCREENSHOT_DIR, 'awake_in_episodes_player.png');
+  await page.screenshot({ path: episodesPath, fullPage: false });
+  console.log('Saved:', episodesPath);
+
+  // 5. Episode 10 Detail page
+  console.log('Auditing Episode 10 Detail page...');
+  await page.goto(`${BASE_URL}/2022/04/21/episode-10-retreats/`, { waitUntil: 'networkidle0' });
+  await checkImages('Episode 10 Detail');
+  const detailPath = path.join(SCREENSHOT_DIR, 'awake_in_episode_detail.png');
+  await page.screenshot({ path: detailPath, fullPage: false });
+  console.log('Saved:', detailPath);
+
+  // 6. RSS Page
+  console.log('Auditing RSS Explorer page...');
+  await page.goto(`${BASE_URL}/rss`, { waitUntil: 'networkidle0' });
+  await checkImages('RSS Page');
+  const rssPath = path.join(SCREENSHOT_DIR, 'awake_in_rss_page.png');
+  await page.screenshot({ path: rssPath, fullPage: false });
+  console.log('Saved:', rssPath);
+
+  // 7. Contact Page
+  console.log('Auditing Contact page...');
+  await page.goto(`${BASE_URL}/contact`, { waitUntil: 'networkidle0' });
+  await checkImages('Contact Page');
+  const contactPath = path.join(SCREENSHOT_DIR, 'awake_in_contact_page.png');
+  await page.screenshot({ path: contactPath, fullPage: false });
+  console.log('Saved:', contactPath);
+
+  await browser.close();
+
+  console.log('\n=== AUDIT RESULTS ===');
+  console.log('Console Errors:', consoleErrors.length);
+  if (consoleErrors.length > 0) {
+    consoleErrors.forEach((e) => console.log('  -', e));
+  }
+  console.log('Page Errors:', pageErrors.length);
+  if (pageErrors.length > 0) {
+    pageErrors.forEach((e) => console.log('  -', e));
+  }
+
+  const screenshots = [
+    'awake_in_home_light.png',
+    'awake_in_home_dark.png',
+    'awake_in_subscribe_modal.png',
+    'awake_in_episodes_player.png',
+    'awake_in_episode_detail.png',
+    'awake_in_rss_page.png',
+    'awake_in_contact_page.png',
+  ];
+
+  console.log('\n=== SCREENSHOT ARTIFACTS ===');
+  for (const s of screenshots) {
+    const p = path.join(SCREENSHOT_DIR, s);
+    if (fs.existsSync(p)) {
+      const stats = fs.statSync(p);
+      console.log(`- ${s}: ${(stats.size / 1024).toFixed(1)} kB (${p})`);
+    } else {
+      console.error(`- MISSING: ${s}`);
+    }
+  }
+}
+
+runAudit().catch((err) => {
+  console.error('Audit failed:', err);
+  process.exit(1);
+});

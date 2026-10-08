@@ -27,6 +27,11 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [audioSourceType, setAudioSourceType] = useState<'local' | 'remote' | 'original'>('local');
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const currentEpisodeRef = useRef<Episode | null>(null);
+  const audioSourceTypeRef = useRef<'local' | 'remote' | 'original'>('local');
+
+  currentEpisodeRef.current = currentEpisode;
+  audioSourceTypeRef.current = audioSourceType;
 
   useEffect(() => {
     const audio = new Audio();
@@ -39,21 +44,25 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const onPause = () => setIsPlaying(false);
 
     const onError = () => {
-      // Fallback chain: local -> remote GitHub Release -> original awake-in.com
-      if (!currentEpisode) return;
+      const ep = currentEpisodeRef.current;
+      const type = audioSourceTypeRef.current;
+      if (!ep) return;
 
-      if (audioSourceType === 'local' && currentEpisode.remoteAudioUrl) {
-        console.warn(`Local audio failed for ${currentEpisode.title}, falling back to GitHub Release...`);
+      if (type === 'local' && ep.remoteAudioUrl) {
+        console.warn(`Local audio unavailable for ${ep.title}, switching to remote mirror...`);
         setAudioSourceType('remote');
-        audio.src = currentEpisode.remoteAudioUrl;
-        audio.play().catch(console.error);
-      } else if (audioSourceType === 'remote' && currentEpisode.originalAudioUrl) {
-        console.warn(`Remote audio failed for ${currentEpisode.title}, falling back to original...`);
+        audio.src = ep.remoteAudioUrl;
+        audio.play().catch((err) => {
+          if (err.name !== 'AbortError') console.warn('Remote play error:', err);
+        });
+      } else if (type === 'remote' && ep.originalAudioUrl) {
+        console.warn(`Remote audio mirror unavailable, trying original source...`);
         setAudioSourceType('original');
-        audio.src = currentEpisode.originalAudioUrl;
-        audio.play().catch(console.error);
+        audio.src = ep.originalAudioUrl;
+        audio.play().catch((err) => {
+          if (err.name !== 'AbortError') console.warn('Original play error:', err);
+        });
       } else {
-        console.error(`Audio playback error for ${currentEpisode.title}`);
         setIsPlaying(false);
       }
     };
@@ -67,6 +76,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     return () => {
       audio.pause();
+      audio.src = '';
       audio.removeEventListener('timeupdate', onTimeUpdate);
       audio.removeEventListener('loadedmetadata', onLoadedMetadata);
       audio.removeEventListener('ended', onEnded);
@@ -74,7 +84,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       audio.removeEventListener('pause', onPause);
       audio.removeEventListener('error', onError);
     };
-  }, [currentEpisode, audioSourceType]);
+  }, []);
 
   const playEpisode = (episode: Episode) => {
     if (!episode.audioUrl && !episode.remoteAudioUrl) return;
@@ -89,16 +99,17 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setCurrentTime(0);
 
     if (audioRef.current) {
-      // Prefer local path first
       const src = episode.audioUrl || episode.remoteAudioUrl || '';
       audioRef.current.src = src;
       audioRef.current.playbackRate = playbackRate;
-      audioRef.current.play().then(() => setIsPlaying(true)).catch((err) => {
-        console.warn('Initial play failed, trying remote:', err);
+      audioRef.current.play().catch((err) => {
+        if (err.name === 'AbortError') return;
         if (episode.remoteAudioUrl) {
           setAudioSourceType('remote');
           audioRef.current!.src = episode.remoteAudioUrl;
-          audioRef.current!.play().catch(console.error);
+          audioRef.current!.play().catch((e) => {
+            if (e.name !== 'AbortError') console.warn(e);
+          });
         }
       });
     }
@@ -109,7 +120,9 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (isPlaying) {
       audioRef.current.pause();
     } else {
-      audioRef.current.play().catch(console.error);
+      audioRef.current.play().catch((err) => {
+        if (err.name !== 'AbortError') console.warn(err);
+      });
     }
   };
 

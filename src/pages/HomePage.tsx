@@ -158,7 +158,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenSubscribe }) => {
               <img
                 src={host.avatar}
                 alt={host.name}
-                loading="lazy"
                 style={{
                   width: '120px',
                   height: '120px',
