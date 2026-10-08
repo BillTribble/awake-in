@@ -63,6 +63,8 @@ async function runAudit() {
   // 2. Homepage — Dark mode
   console.log('Switching to Dark mode...');
   await page.evaluate(() => {
+    const toggleBtn = document.querySelector('button[aria-label*="Switch to dark mode"]');
+    if (toggleBtn) toggleBtn.click();
     document.documentElement.setAttribute('data-theme', 'dark');
     localStorage.setItem('awake-in-theme', 'dark');
   });
@@ -73,6 +75,8 @@ async function runAudit() {
 
   // Switch back to original Light mode for remaining pages
   await page.evaluate(() => {
+    const toggleBtn = document.querySelector('button[aria-label*="Switch to light mode"]');
+    if (toggleBtn) toggleBtn.click();
     document.documentElement.setAttribute('data-theme', 'light');
     localStorage.setItem('awake-in-theme', 'light');
   });

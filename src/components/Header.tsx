@@ -17,12 +17,12 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
           <img
             src={withBase('/wp-content/uploads/2020/03/awake-in-logo.png')}
             alt="Awake In"
+            className="brand-wordmark"
             style={{
               maxHeight: '63px',
               width: 'auto',
               display: 'block',
-              filter: theme === 'dark' ? 'invert(1)' : 'none',
-              mixBlendMode: theme === 'dark' ? 'screen' : 'normal',
+              ...(theme === 'dark' ? { filter: 'invert(1)', mixBlendMode: 'screen' } : {}),
             }}
           />
         </Link>
