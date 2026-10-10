@@ -98,7 +98,7 @@ function awakeInStaticPlugin(): Plugin {
 }
 
 export default defineConfig(({ command }) => ({
-  base: command === 'build' ? (process.env.VITE_BASE_PATH || '/awake-in/') : '/',
+  base: command === 'build' ? (process.env.VITE_BASE_PATH || '/') : '/',
   plugins: [react(), awakeInStaticPlugin()],
   server: {
     port: 3005,
