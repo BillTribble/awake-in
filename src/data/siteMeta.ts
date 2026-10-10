@@ -40,18 +40,7 @@ export const siteMeta: SiteMeta = {
       quickIcon: withBase('/wp-content/uploads/2020/05/rss-feed.svg'),
     },
   ],
-  socialLinks: [
-    {
-      platform: 'Twitter',
-      url: 'https://twitter.com/awake_in_',
-      handle: '@awake_in_',
-    },
-    {
-      platform: 'Instagram',
-      url: 'https://instagram.com/awake_in_',
-      handle: '@awake_in_',
-    },
-  ],
+  socialLinks: [],
   hero: {
     title: 'Awake In Podcast',
     tagline: 'Chats about mindfulness, wellness, and awakening.',
@@ -108,7 +97,7 @@ export const siteMeta: SiteMeta = {
   ],
   footer: {
     heading: '👋 Get in Touch',
-    text: 'Comments, suggestions, or guest ideas? We’d love to hear from you. Please get in touch via our site, email, or our socials!',
+    text: 'Comments, suggestions, or guest ideas? We’d love to hear from you. Please get in touch via our site or email!',
     copyright: 'Copyright © 2026 Awake In',
   },
 };
