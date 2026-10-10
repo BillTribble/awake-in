@@ -103,7 +103,7 @@ export default defineConfig(({ command }) => ({
   server: {
     port: 3005,
     strictPort: true,
-    host: '0.0.0.0',
+    host: '::',
     allowedHosts: true,
     hmr: false,
     headers: {
@@ -115,7 +115,7 @@ export default defineConfig(({ command }) => ({
   preview: {
     port: 3005,
     strictPort: true,
-    host: '0.0.0.0',
+    host: '::',
     headers: {
       'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
       'Pragma': 'no-cache',
