@@ -258,7 +258,12 @@ const rawEpisodes: Episode[] = [
 
 export const episodes: Episode[] = rawEpisodes.map((ep) => ({
   ...ep,
-  audioUrl: ep.audioUrl ? withBase(ep.audioUrl) : null,
+  audioUrl: import.meta.env.PROD
+    ? ep.remoteAudioUrl
+    : ep.audioUrl
+      ? withBase(ep.audioUrl)
+      : ep.remoteAudioUrl,
+  originalAudioUrl: ep.remoteAudioUrl,
   featuredImage: ep.featuredImage ? withBase(ep.featuredImage) : null,
   excerptHtml: withBaseHtml(ep.excerptHtml),
   featuredExcerptHtml: ep.featuredExcerptHtml ? withBaseHtml(ep.featuredExcerptHtml) : null,

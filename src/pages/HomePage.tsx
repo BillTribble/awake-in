@@ -357,7 +357,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenSubscribe }) => {
                   maxWidth: '440px',
                 }}
               >
-                Bill is a designer, musician, and technologist. He got started in mindfulness via silent retreats in the Goenka tradition. While he’s put in thousands of hours of meditation, he’s probably spent way more time playing computer games and wishes he hadn’t. Find him on <a href="https://mastodon.design/@bill_tribble" target="_blank" rel="noreferrer noopener" className="ek-link" style={{ color: '#ffaedf', textDecoration: 'underline' }}>Mastodon</a> or check him out on:
+                Bill is a designer, musician, and technologist. He got started in mindfulness via silent retreats in the Goenka tradition. While he’s put in thousands of hours of meditation, he’s probably spent way more time playing computer games and wishes he hadn’t.
               </p>
               <a
                 href="https://www.instagram.com/bill_tribble/"

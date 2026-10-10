@@ -81,7 +81,6 @@ export const siteMeta: SiteMeta = {
       avatar: withBase('/wp-content/uploads/2020/03/bill-1.png'),
       bio: 'Bill is a designer, musician, and technologist. He got started in mindfulness via silent retreats in the Goenka tradition. While he’s put in thousands of hours of meditation, he’s probably spent way more time playing computer games and wishes he hadn’t.',
       instagram: 'https://www.instagram.com/bill_tribble/',
-      mastodon: 'https://mastodon.design/@bill_tribble',
     },
   ],
   featuredEpisodeIds: [4255, 4064, 3765, 3556],
