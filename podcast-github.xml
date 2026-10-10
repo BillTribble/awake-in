@@ -11,7 +11,7 @@
 >
 
 <channel>
-	<title>🐶 &#8211; Awake In</title>
+	<title>Awake In</title>
 	<atom:link href="https://awake-in.com/podcasts/awake-in/feed/" rel="self" type="application/rss+xml" />
 	<link>https://awake-in.com</link>
 	<description>London based podcast on mindfulness and wellness</description>
@@ -2543,7 +2543,7 @@
 					<wfw:commentRss>https://awake-in.com/2020/03/25/episode-0-1-introduction/feed/</wfw:commentRss>
 			<slash:comments>3074</slash:comments>
 		
-		<enclosure url='http://awake-in.com/wp-content/uploads/2020/03/awake-in-episode-0.1.mp3' length='87959509' type='audio/mpeg' />
+		<enclosure url="https://github.com/BillTribble/awake-in/releases/download/v1.0.0/awake-in-0.1-v3.mp3" length="51286472" type="audio/mpeg" />
 
 		<post-id xmlns="com-wordpress:feed-additions:1">3460</post-id><itunes:author>bill</itunes:author>
 <itunes:explicit>no</itunes:explicit>
