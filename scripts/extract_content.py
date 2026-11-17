@@ -17,7 +17,7 @@ from extract_helpers import (
 )
 
 RAW_DIR = "/tmp/awake-in-raw"
-OUTPUT_DATA_DIR = "/usr/local/google/home/tribble/awake-in/src/data"
+OUTPUT_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src", "data")
 
 
 def extract_page_excerpts(page_obj):

@@ -2,8 +2,8 @@ import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const SCREENSHOT_DIR = '/usr/local/google/home/tribble/.gemini/jetski/brain/21bad6fe-046e-4cdd-b090-71465ff227e0';
-const LIVE_URL = 'https://billtribble.github.io/awake-in/';
+const SCREENSHOT_DIR = process.env.SCREENSHOT_DIR || '/tmp/awake-in-screenshots';
+const LIVE_URL = 'https://awake-in.com/';
 
 async function verifyLive() {
   console.log('Testing live GitHub Pages site at:', LIVE_URL);

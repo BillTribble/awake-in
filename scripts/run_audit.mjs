@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const SCREENSHOT_DIR = '/usr/local/google/home/tribble/.gemini/jetski/brain/21bad6fe-046e-4cdd-b090-71465ff227e0';
+const SCREENSHOT_DIR = process.env.SCREENSHOT_DIR || '/tmp/awake-in-screenshots';
 const BASE_URL = 'http://localhost:3005';
 
 async function runAudit() {
